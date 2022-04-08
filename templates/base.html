@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">MyBlog</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'category_list' %}">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'blog_create' %}" class="nav-link active">Blog Add</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active">About</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav  mb-2 mb-lg-0">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a  class="nav-link active">{{ user.username }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout_page' %}" class="nav-link active">Chiqish</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login_page' %}" class="nav-link active">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'register' %}" class="nav-link active">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+        <div class="col-lg-3">
+            <h1>Categories All</h1>
+            <hr>
+            {% for category in categories %}
+                <p><a href="{% url 'category_blogs' category.slug %}">{{ category.name }}</a></p>
+            {% endfor %}
+
+            <h1>Top blogs</h1>
+            <hr>
+            {% for tb in top_blogs %}
+                <p><a href="{% url 'blog_detail' tb.slug %}">{{ tb.title }} </a></p>
+            {% endfor %}
+
+            <h1>Tags All</h1>
+            <hr>
+            {% for tag in tags %}
+                <a href="{% url 'tag_blogs' tag.slug %}">#{{ tag.name }} </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<footer>
+    Footer
+</footer>
+
+<script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+</body>
+</html>

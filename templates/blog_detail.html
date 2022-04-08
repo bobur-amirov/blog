@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ blog.title }} home {% endblock %}
+
+{% block content %}
+
+    <h1>{{ blog.title }} page</h1>
+    <hr>
+        <h3>{{ blog.title }}</h3>
+        <p><a href="{% url 'category_blogs' blog.category.slug %}">{{ blog.category.name }}</a>
+            Sana: {{ blog.created | date:'Y-m-d // h:i' }}</p>
+        <img style="width: 800px;" src="{{ blog.image.url }}" alt="Bu rasm">
+        <p>{{ blog.description }}</p>
+        <p>User: {{ blog.user.username }}</p>
+        <p>Ko'rishlar soni: {{ blog.views }}</p>
+        {% for tag in blog.tags.all %}
+            <a href="{% url 'tag_blogs' tag.slug %}">#{{ tag.name }} </a>
+        {% endfor %}
+    <br>
+    {% if blog.user == request.user %}
+        <a href="{% url 'blog_update' blog.slug %}"> Update </a>
+        <a href="{% url 'blog_delete' blog.slug %}"> Delete </a>
+    {% endif %}
+
+{% endblock %}
+
+

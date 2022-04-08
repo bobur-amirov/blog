@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ category.name }} home {% endblock %}
+
+{% block content %}
+
+    <h1>{{ category.name }} page</h1>
+    <hr>
+    {% for blog in blogs %}
+        <h3><a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a></h3>
+        <p><a href="{% url 'category_blogs' blog.category.slug %}">{{ blog.category.name }}</a>
+            Sana: {{ blog.created | date:'Y-m-d // h:i' }}</p>
+        <img style="width: 400px;" src="{{ blog.image.url }}" alt="Bu rasm">
+        <p>{{ blog.description | truncatechars:100 }}</p>
+        <p>User: {{ blog.user.username }}</p>
+        <p>Ko'rishlar soni: {{ blog.views }}</p>
+        {% for tag in blog.tags.all %}
+            <a href="{% url 'tag_blogs' tag.slug %}">#{{ tag.name }} </a>
+        {% endfor %}
+        <hr>
+    {% endfor %}
+{% endblock %}
+
+

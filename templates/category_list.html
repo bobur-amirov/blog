@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} Category home {% endblock %}
+
+{% block content %}
+    <h1>Categories All</h1>
+    <hr>
+    {% for category in categories %}
+        <div class="row">
+            <div class="col-lg-5">
+                <img style="width: 200px;" src="{{ category.image.url }}">
+            </div>
+            <div class="col-lg-7">
+                <h3><a href="{% url 'category_blogs' category.slug %}">{{ category.name }}</a></h3>
+                <p>{{ category.description }}</p>
+                <p>Blogs count: {{ category.blog_set.count }}</p>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}
+
