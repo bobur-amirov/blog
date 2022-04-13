@@ -3,24 +3,51 @@
 {% block title %} {{ blog.title }} home {% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-lg-12">
 
-    <h1>{{ blog.title }} page</h1>
+            <h1>{{ blog.title }} page</h1>
+            <hr>
+            <h3>{{ blog.title }}</h3>
+            <p><a href="{% url 'category_blogs' blog.category.slug %}">{{ blog.category.name }}</a>
+                Sana: {{ blog.created | date:'Y-m-d // h:i' }}</p>
+            <img style="width: 800px;" src="{{ blog.image.url }}" alt="Bu rasm">
+            <p>{{ blog.description }}</p>
+            <p>User: {{ blog.user.username }}</p>
+            <p>Ko'rishlar soni: {{ blog.views }}</p>
+            {% for tag in blog.tags.all %}
+                <a href="{% url 'tag_blogs' tag.slug %}">#{{ tag.name }} </a>
+            {% endfor %}
+            <br>
+            {% if blog.user == request.user %}
+                <a href="{% url 'blog_update' blog.slug %}"> Update </a>
+                <a href="{% url 'blog_delete' blog.slug %}"> Delete </a>
+            {% endif %}
+
+        </div>
+    </div>
     <hr>
-        <h3>{{ blog.title }}</h3>
-        <p><a href="{% url 'category_blogs' blog.category.slug %}">{{ blog.category.name }}</a>
-            Sana: {{ blog.created | date:'Y-m-d // h:i' }}</p>
-        <img style="width: 800px;" src="{{ blog.image.url }}" alt="Bu rasm">
-        <p>{{ blog.description }}</p>
-        <p>User: {{ blog.user.username }}</p>
-        <p>Ko'rishlar soni: {{ blog.views }}</p>
-        {% for tag in blog.tags.all %}
-            <a href="{% url 'tag_blogs' tag.slug %}">#{{ tag.name }} </a>
-        {% endfor %}
-    <br>
-    {% if blog.user == request.user %}
-        <a href="{% url 'blog_update' blog.slug %}"> Update </a>
-        <a href="{% url 'blog_delete' blog.slug %}"> Delete </a>
-    {% endif %}
+    <div class="row">
+        <div class="col-lg-6">
+            {% for comment in blog.comment_set.all %}
+                <p>User: {{ comment.user.username }} | Date: {{ comment.created }}</p>
+                <p>{{ comment.text }}</p>
+                <hr>
+            {% endfor %}
+        </div>
+        <div class="col-lg-6">
+            <form method="post">
+                {% csrf_token %}
+                <label>Izoh qoldiring!</label>
+                {{ form.text }}
+                {% if user.is_authenticated %}
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                {% else %}
+                    <a href="{% url 'login_page' %}" class="btn btn-primary">Comment</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
 
 {% endblock %}
 

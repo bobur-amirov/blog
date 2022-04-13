@@ -1,18 +1,24 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
+from django.core.paginator import Paginator
 
 from .models import Blog, Category, Tag
-from .forms import RegisterForm, BlogForm
+from .forms import RegisterForm, BlogForm, CommentForm
 
 
 def home(request):
     blogs = Blog.objects.all()
 
+    paginator = Paginator(blogs, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'blogs': blogs,
+        'blogs': page_obj,
     }
 
     return render(request, 'home.html', context)
@@ -54,12 +60,23 @@ def tag_blogs(request, slug):
 
 def blog_detail(request, slug):
     blog = get_object_or_404(Blog, slug=slug)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form_commnet = form.save(commit=False)
+            form_commnet.blog = blog
+            form_commnet.user = request.user
+            form_commnet.save()
+            return redirect('blog_detail', blog.slug)
+    else:
+        form = CommentForm()
 
     blog.views += 1
     blog.save()
 
     context = {
         'blog': blog,
+        'form': form,
     }
 
     return render(request, 'blog_detail.html', context)
@@ -69,10 +86,7 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
+            user = form.save()
             login(request, user)
             return redirect('home')
     else:
@@ -164,3 +178,13 @@ def blog_delete(request, slug):
     }
 
     return render(request, 'blog_delete.html', context)
+
+
+def user_list(request):
+    users = User.objects.all()
+
+    context = {
+        'users': users
+    }
+
+    return render(request, 'user_list.html', context)

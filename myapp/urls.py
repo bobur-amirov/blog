@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (home, category_list, category_blogs,
                     tag_blogs, blog_detail, login_page, logout_page,
-                    register, blog_create, blog_update, blog_delete)
+                    register, blog_create, blog_update, blog_delete, user_list)
 
 urlpatterns = [
     path('', home, name='home'),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('create/', blog_create, name='blog_create'),
     path('update/<slug:slug>', blog_update, name='blog_update'),
     path('delete/<slug:slug>', blog_delete, name='blog_delete'),
+    path('users', user_list, name='user_list'),
 ]
