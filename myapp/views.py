@@ -13,7 +13,7 @@ from .forms import RegisterForm, BlogForm, CommentForm
 def home(request):
     blogs = Blog.objects.all()
 
-    paginator = Paginator(blogs, 3)
+    paginator = Paginator(blogs, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -181,7 +181,11 @@ def blog_delete(request, slug):
 
 
 def user_list(request):
-    users = User.objects.all()
+    username = request.GET.get('username')
+    if username:
+        users = User.objects.filter(username__icontains=username)
+    else:
+        users = User.objects.all()
 
     context = {
         'users': users

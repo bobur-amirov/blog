@@ -27,7 +27,11 @@
                     <a class="page-link" href="?page={{ blogs.previous_page_number }}">Previous</a>
                 </li>
             {% endif %}
-            <li class="page-item"><a class="page-link" href="#">{{ blogs.number }}</a></li>
+            {% for i in blogs.paginator.page_range %}
+                <li class="{% if i == blogs.number %}page-item active{% else %}page-item{% endif %}">
+                    <a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                </li>
+            {% endfor %}
             {% if blogs.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ blogs.next_page_number }}">Next</a>
